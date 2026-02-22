@@ -1,0 +1,36 @@
+@using LinkUp.Core.Application.Dtos.Battleship
+@using LinkUp.Core.Domain.Common.Enums
+@{
+    ViewData["Title"] = "Elegir dirección";
+    int gameId = (int)ViewBag.GameId;
+    int length = (int)ViewBag.Length;
+    int row = (int)ViewBag.Row;
+    int col = (int)ViewBag.Col;
+}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Dirección</h5>
+                @if (TempData["Error"] is string err)
+                {
+                    <div class="alert alert-danger">@err</div>
+                }
+                <form asp-action="PlaceShip" method="post">
+                    <input type="hidden" name="GameId" value="@gameId" />
+                    <input type="hidden" name="Length" value="@length" />
+                    <input type="hidden" name="StartRow" value="@row" />
+                    <input type="hidden" name="StartCol" value="@col" />
+                    <select name="Direction" class="form-select mb-3">
+                        <option value="@Direction.Up">Arriba</option>
+                        <option value="@Direction.Down">Abajo</option>
+                        <option value="@Direction.Right">Derecha</option>
+                        <option value="@Direction.Left">Izquierda</option>
+                    </select>
+                    <a asp-action="ChooseCell" asp-route-id="@gameId" asp-route-length="@length" class="btn btn-secondary">Volver</a>
+                    <button type="submit" class="btn btn-primary ms-2">Posicionar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

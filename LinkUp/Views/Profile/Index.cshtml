@@ -1,0 +1,59 @@
+@model LinkUp.Core.Application.ViewModels.Profile.EditProfileViewModel
+@{
+    ViewData["Title"] = "Mi perfil";
+}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Editar perfil</h5>
+                @if (TempData["ProfileSuccess"] is string ok)
+                {
+                    <div class="alert alert-success">@ok</div>
+                }
+                <form asp-action="Index" method="post" enctype="multipart/form-data">
+                    <div class="mb-3 text-center">
+                        <img src="@(ViewBag.Photo ?? "/img/avatar.png")" class="rounded-circle" style="width:80px;height:80px;object-fit:cover" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Apellido</label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono</label>
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Foto de perfil</label>
+                        <input asp-for="ProfilePhoto" type="file" class="form-control" />
+                        <span asp-validation-for="ProfilePhoto" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nueva contraseña</label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Confirmar nueva contraseña</label>
+                            <input asp-for="ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Volver</a>
+                    <button type="submit" class="btn btn-primary ms-2">Guardar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

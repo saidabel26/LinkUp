@@ -1,0 +1,37 @@
+@using LinkUp.Core.Application.Dtos.Battleship
+@{
+    ViewData["Title"] = "Esperando oponente";
+    var board = (BoardDto)ViewBag.Board;
+    int gameId = (int)ViewBag.GameId;
+}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">El otro jugador aún no termina de configurar sus barcos</h5>
+                <div class="d-grid" style="grid-template-columns: repeat(12, 28px); gap: 4px;">
+                    @for (int r = 0; r < board.Size; r++)
+                    {
+                        for (int c = 0; c < board.Size; c++)
+                        {
+                            var ship = board.MyPlacements.Any(p =>
+                                Enumerable.Range(0, p.Length).Any(i =>
+                                    (p.Direction == LinkUp.Core.Domain.Common.Enums.Direction.Down ? (p.StartRow + i, p.StartCol) :
+                                     p.Direction == LinkUp.Core.Domain.Common.Enums.Direction.Up ? (p.StartRow - i, p.StartCol) :
+                                     p.Direction == LinkUp.Core.Domain.Common.Enums.Direction.Right ? (p.StartRow, p.StartCol + i) :
+                                     (p.StartRow, p.StartCol - i))
+                                    .Equals((r, c))
+                                )
+                            );
+                            var bg = ship ? "#6c757d" : "#f8f9fa";
+                            <div style="width:28px;height:28px;border:1px solid #dee2e6;background-color:@bg"></div>
+                        }
+                    }
+                </div>
+                <div class="mt-3">
+                    <a asp-action="Index" class="btn btn-secondary">Volver atrás</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

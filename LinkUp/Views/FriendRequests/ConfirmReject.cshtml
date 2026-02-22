@@ -1,0 +1,18 @@
+@model LinkUp.Core.Application.ViewModels.Friends.ConfirmFriendRequestViewModel
+@{
+    ViewData["Title"] = "Confirmar rechazo";
+}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <p>¿Está seguro que desea rechazar la solicitud de amistad del usuario <strong>@Model.UserDisplay</strong>?</p>
+                <form asp-action="Reject" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-danger ms-2">Rechazar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

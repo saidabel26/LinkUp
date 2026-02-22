@@ -1,0 +1,41 @@
+@model IEnumerable<LinkUp.Core.Application.Dtos.Social.EligibleUserDto>
+@{
+    ViewData["Title"] = "Nueva solicitud";
+}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="New" method="get" class="mb-3">
+                    <div class="input-group">
+                        <input type="text" name="q" value="@ViewBag.Search" class="form-control" placeholder="Buscar usuario..." />
+                        <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+                    </div>
+                </form>
+                <form asp-action="Create" method="post">
+                    <div class="list-group mb-3">
+                        @foreach (var u in (IEnumerable<LinkUp.Core.Application.Dtos.Social.EligibleUserDto>)ViewBag.Users)
+                        {
+                            <div class="list-group-item d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <img src="@(u.ProfilePhotoUrl ?? "/img/avatar.png")" class="rounded-circle me-2" style="width:32px;height:32px;object-fit:cover" />
+                                    <div>
+                                        <div class="fw-semibold">@(u.FullName ?? u.UserName)</div>
+                                        <small class="text-muted">@u.UserName - @u.CommonFriendsCount amigos en común</small>
+                                    </div>
+                                </div>
+                                <input type="radio" name="toUserId" value="@u.UserId" />
+                            </div>
+                        }
+                        @if (!((IEnumerable<LinkUp.Core.Application.Dtos.Social.EligibleUserDto>)ViewBag.Users).Any())
+                        {
+                            <div class="list-group-item text-muted">No hay usuarios para mostrar.</div>
+                        }
+                    </div>
+                    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+                    <button type="submit" class="btn btn-primary ms-2">Enviar solicitud</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

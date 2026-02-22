@@ -1,0 +1,81 @@
+@using LinkUp.Core.Application.Dtos.Battleship
+@{
+    ViewData["Title"] = "Battleship";
+    var active = (IReadOnlyList<GameSummaryDto>)ViewBag.Active;
+    var history = (IReadOnlyList<GameHistoryDto>)ViewBag.History;
+    var activeFriendByGame = (IDictionary<int, (string userId, string display)>)ViewBag.ActiveFriendByGame;
+    var historyFriendByGame = (IDictionary<int, (string userId, string display)>)ViewBag.HistoryFriendByGame;
+    var summary = (dynamic)ViewBag.HistorySummary;
+}
+<div class="row">
+    <div class="col-12">
+        @if (TempData["BattleSuccess"] is string bs)
+        {
+            <div class="alert alert-success">@bs</div>
+        }
+        @if (TempData["BattleInfo"] is string bi)
+        {
+            <div class="alert alert-info">@bi</div>
+        }
+        @if (TempData["Error"] is string er)
+        {
+            <div class="alert alert-danger">@er</div>
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5>Partidas activas</h5>
+            <a asp-action="New" class="btn btn-primary btn-sm">Nueva partida</a>
+        </div>
+        @foreach (var g in active)
+        {
+            var friend = activeFriendByGame[g.Id];
+            var hours = Math.Round((DateTime.UtcNow - g.StartedAt).TotalHours, 1);
+            <div class="card mb-2">
+                <div class="card-body d-flex justify-content-between">
+                    <div>
+                        <div class="fw-semibold">@friend.display</div>
+                        <small class="text-muted">Inicio: @g.StartedAt.ToLocalTime() • @hours h</small>
+                    </div>
+                    <div>
+                        <a asp-action="Enter" asp-route-id="@g.Id" class="btn btn-outline-secondary btn-sm">Entrar</a>
+                        <a asp-action="ConfirmResign" asp-route-id="@g.Id" class="btn btn-outline-danger btn-sm ms-1">Finalizar</a>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (active.Count == 0)
+        {
+            <div class="text-muted">No hay partidas activas.</div>
+        }
+    </div>
+    <div class="col-md-6">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5>Historial</h5>
+            <div class="text-muted">Total: @summary.total • Ganadas: @summary.won • Perdidas: @summary.lost</div>
+        </div>
+        @foreach (var g in history)
+        {
+            var friend = historyFriendByGame[g.Id];
+            <div class="card mb-2">
+                <div class="card-body d-flex justify-content-between">
+                    <div>
+                        <div class="fw-semibold">@friend.display</div>
+                        <small class="text-muted">@g.StartedAt.ToLocalTime() - @g.FinishedAt.ToLocalTime() • @Math.Round(g.DurationHours,1)h</small>
+                        <div><small class="text-muted">Ganador: @(g.Won ? "Yo" : friend.display)</small></div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge @(g.Won ? "bg-success" : "bg-danger")">@(g.Won ? "Ganada" : "Perdida")</span>
+                        <a asp-action="Result" asp-route-id="@g.Id" class="btn btn-outline-secondary btn-sm">Ver resultado</a>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (history.Count == 0)
+        {
+            <div class="text-muted">No hay partidas finalizadas.</div>
+        }
+    </div>
+</div>

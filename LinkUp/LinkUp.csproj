@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Middlewares\" />
+    <Folder Include="wwwroot\uploads\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LinkUp.Core.Application\LinkUp.Core.Application.csproj" />
+    <ProjectReference Include="..\LinkUp.Core.Domain\LinkUp.Core.Domain.csproj" />
+    <ProjectReference Include="..\LinkUp.Infrastructure.Identity\LinkUp.Infrastructure.Identity.csproj" />
+    <ProjectReference Include="..\LinkUp.Infrastructure.Persistence\LinkUp.Infrastructure.Persistence.csproj" />
+    <ProjectReference Include="..\LinkUp.Infrastructure.Shared\LinkUp.Infrastructure.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

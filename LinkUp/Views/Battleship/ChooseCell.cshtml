@@ -1,0 +1,38 @@
+@using LinkUp.Core.Application.Dtos.Battleship
+@{
+    ViewData["Title"] = "Elegir celda";
+    var board = (BoardDto)ViewBag.Board;
+    int gameId = (int)ViewBag.GameId;
+    int length = (int)ViewBag.Length;
+}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Seleccione una celda para el barco de @length</h5>
+                <div class="d-grid" style="grid-template-columns: repeat(12, 28px); gap: 4px;">
+                    @for (int r = 0; r < board.Size; r++)
+                    {
+                        for (int c = 0; c < board.Size; c++)
+                        {
+                            var occupied = board.MyPlacements.Any(p =>
+                                Enumerable.Range(0, p.Length).Any(i =>
+                                    (p.Direction == LinkUp.Core.Domain.Common.Enums.Direction.Down ? (p.StartRow + i, p.StartCol) :
+                                     p.Direction == LinkUp.Core.Domain.Common.Enums.Direction.Up ? (p.StartRow - i, p.StartCol) :
+                                     p.Direction == LinkUp.Core.Domain.Common.Enums.Direction.Right ? (p.StartRow, p.StartCol + i) :
+                                     (p.StartRow, p.StartCol - i))
+                                    .Equals((r, c))
+                                )
+                            );
+                            var bg = occupied ? "#6c757d" : "#f8f9fa";
+                            <a asp-action="ChooseDirection" asp-route-id="@gameId" asp-route-length="@length" asp-route-row="@r" asp-route-col="@c" style="display:block;width:28px;height:28px;border:1px solid #dee2e6;background-color:@bg;pointer-events:@(occupied?"none":"auto")"></a>
+                        }
+                    }
+                </div>
+                <div class="mt-3">
+                    <a asp-action="Setup" asp-route-id="@gameId" class="btn btn-secondary">Volver</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

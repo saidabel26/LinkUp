@@ -1,0 +1,52 @@
+@using LinkUp.Core.Application.Dtos.Battleship
+@{
+    ViewData["Title"] = "Resultado";
+    var board = (BoardDto)ViewBag.Board;
+    bool showOpponent = (bool)ViewBag.ShowOpponent;
+    int gameId = (int)ViewBag.GameId;
+}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">@((showOpponent ? "Tablero del otro jugador" : "Mi tablero de ataque"))</h5>
+                <div class="d-grid" style="grid-template-columns: repeat(12, 28px); gap: 4px;">
+                    @for (int r = 0; r < board.Size; r++)
+                    {
+                        for (int c = 0; c < board.Size; c++)
+                        {
+                            var hit = board.MyAttacks.Any(a => a.Row == r && a.Col == c && a.IsHit);
+                            var miss = board.MyAttacks.Any(a => a.Row == r && a.Col == c && !a.IsHit);
+                            var ship = board.MyPlacements.Any(p =>
+                                Enumerable.Range(0, p.Length).Any(i =>
+                                    (p.Direction == LinkUp.Core.Domain.Common.Enums.Direction.Down ? (p.StartRow + i, p.StartCol) :
+                                     p.Direction == LinkUp.Core.Domain.Common.Enums.Direction.Up ? (p.StartRow - i, p.StartCol) :
+                                     p.Direction == LinkUp.Core.Domain.Common.Enums.Direction.Right ? (p.StartRow, p.StartCol + i) :
+                                     (p.StartRow, p.StartCol - i))
+                                    .Equals((r, c))
+                                )
+                            );
+                            var bg = hit ? "#dc3545" : miss ? "#198754" : ship ? "#6c757d" : "#f8f9fa";
+                            <div style="width:28px;height:28px;border:1px solid #dee2e6;background-color:@bg"></div>
+                        }
+                    }
+                </div>
+                <div class="mt-3">
+                    @if (showOpponent)
+                    {
+                        <a asp-action="Result" asp-route-id="@gameId" class="btn btn-secondary">Volver</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Index" class="btn btn-secondary">Volver</a>
+                    }
+                    @if (!showOpponent)
+                    {
+                        <a asp-action="Result" asp-route-id="@gameId" asp-route-showOpponent="true" class="btn btn-outline-primary ms-2">Ver tablero del otro jugador</a>
+                    }
+                    <a asp-action="MyBoard" asp-route-id="@gameId" asp-route-returnTo="Result" class="btn btn-outline-secondary ms-2">Ver mi tablero (posicionamiento)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

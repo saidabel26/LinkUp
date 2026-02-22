@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Confirmar eliminación de amigo";
+}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <p>¿Está seguro que desea eliminar a <strong>@ViewBag.UserDisplay</strong> de sus amigos?</p>
+                <form asp-action="Remove" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="@ViewBag.UserId" />
+                    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-danger ms-2">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

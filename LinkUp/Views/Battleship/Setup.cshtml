@@ -1,0 +1,26 @@
+@{
+    ViewData["Title"] = "Posicionar barcos";
+    var remaining = (IEnumerable<dynamic>)ViewBag.Remaining;
+}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Seleccione un barco</h5>
+                <ul class="list-group">
+                    @foreach (var it in remaining)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Barco de @it.Length posiciones
+                            <div>
+                                <span class="badge bg-secondary me-2">@it.Remaining</span>
+                                <a asp-action="ChooseCell" asp-route-id="@ViewBag.GameId" asp-route-length="@it.Length" class="btn btn-sm btn-primary">Posicionar</a>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <a asp-action="Enter" asp-route-id="@ViewBag.GameId" class="btn btn-outline-secondary">Volver atrás</a>
+    </div>
+</div>
