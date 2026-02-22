@@ -1,83 +1,78 @@
 # LinkUp
 
-Proyecto de red social educativa desarrollado en ASP.NET Core (.NET 9).
+LinkUp es una aplicación web de ejemplo que implementa una pequeña red social con funcionalidades de publicaciones, comentarios, relaciones de amistad y un mini-juego tipo Battleship. Está organizada con una arquitectura por capas para separar dominio, lógica de aplicación e infraestructura.
 
-## Descripci�n breve
+Principales características
+- Autenticación y gestión de usuarios (ASP.NET Core Identity).
+- Publicaciones con texto, imagen o enlace de YouTube.
+- Comentarios anidados (replies) y reacciones (me gusta / no me gusta).
+- Gestión de amigos y solicitudes de amistad.
+- Mini-juego Battleship con posicionamiento de barcos, ataques por turnos y manejo de tiempos de inactividad.
+- Subida de archivos (foto de perfil, imágenes de publicaciones).
 
-LinkUp es una aplicaci�n demo que implementa funcionalidades t�picas de una red social: registro y autenticaci�n de usuarios (ASP.NET Core Identity), publicaciones (texto, imagen o enlace de YouTube), comentarios anidados y reacciones, gesti�n de amigos y solicitudes, y un mini-juego Battleship con gesti�n de partidas y turnos. El proyecto sigue una arquitectura por capas (Onion) para facilitar separaci�n de responsabilidades y mantenibilidad.
+Arquitectura y organización
+- `LinkUp.Core.Domain`: entidades del dominio y contratos (interfaces de repositorio, enums, configuraciones).
+- `LinkUp.Core.Application`: servicios de aplicación (casos de uso), DTOs, ViewModels y perfiles de AutoMapper.
+- `LinkUp.Infrastructure.Persistence`: implementación de persistencia con EF Core (DbContext, configuraciones y repositorios).
+- `LinkUp.Infrastructure.Identity`: configuración e implementación de ASP.NET Core Identity (usuarios y servicios relacionados).
+- `LinkUp.Infrastructure.Shared`: servicios compartidos (por ejemplo, envío de correo).
+- `LinkUp` (proyecto Web): controladores, vistas Razor y composition root (`Program.cs`).
 
-## Arquitectura y organizaci�n
+Tecnologías
+- .NET 9 / C# 13
+- ASP.NET Core MVC (Razor views)
+- Entity Framework Core (Code-First)
+- ASP.NET Core Identity
+- AutoMapper
+- Bootstrap (estilos en vistas)
 
-- **LinkUp.Core.Domain**: modelo de dominio (entidades, enums, contratos de repositorios).
-- **LinkUp.Core.Application**: l�gica de aplicaci�n, DTOs, ViewModels, servicios de negocio y mapeos (AutoMapper).
-- **LinkUp.Infrastructure.Persistence**: implementaci�n de persistencia con EF Core (DbContext, configuraciones y repositorios).
-- **LinkUp.Infrastructure.Identity**: configuraci�n de ASP.NET Core Identity y servicios relacionados con usuarios.
-- **LinkUp.Infrastructure.Shared**: servicios compartidos como env�o de correo.
-- **LinkUp (proyecto web)**: interfaz y controladores (MVC), vistas Razor, utilidades y composici�n (Program.cs).
+Seguridad de configuración y `appsettings.json`
+Por seguridad el archivo `appsettings.json` que contiene la cadena de conexión (`ConnectionStrings:DefaultConnection`) y las credenciales de correo (`MailSettings`) está ignorado por git en este repositorio. Esto evita exponer información sensible (como credenciales SMTP o cadenas de conexión a bases de datos) en el control de código fuente.
 
-## Tecnolog�as principales
+Si clonas el repositorio y quieres ejecutar la aplicación localmente, no es necesario que el repositorio contenga el archivo `appsettings.json`. Solo debes crear un archivo `appsettings.json` en la raíz del proyecto web (LinkUp) con la misma estructura que se muestra a continuación.
 
-- **.NET 9**
-- **ASP.NET Core MVC** (Razor views)
-- **Entity Framework Core** (Code-First)
-- **ASP.NET Core Identity**
-- **AutoMapper**
-- **Bootstrap** (estilos)
+Ejemplo mínimo de `appsettings.json` (sustituir los valores):
 
-## Instalaci�n y puesta en marcha (resumen)
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "DefaultConnection": "<TU_CADENA_DE_CONEXION_A_LA_BASE_DE_DATOS_AQUI>"
+  },
+  "MailSettings": {
+    "EmailFrom": "<EMAIL_FROM_O_REMETENTE>",
+    "SmtpHost": "<SMTP_HOST>",
+    "SmtpPort": 587,
+    "SmtpUser": "<SMTP_USER>",
+    "SmtpPass": "<SMTP_PASSWORD>",
+    "DisplayName": "LinkUp Social Network"
+  }
+}
+```
 
-1. Clonar el repositorio:
+Notas sobre los campos sensibles
+- `ConnectionStrings:DefaultConnection`: cadena de conexión a SQL Server (o la base de datos que uses). Ejemplo local: `Server=localhost;Database=LinkUpDb;Trusted_Connection=True;MultipleActiveResultSets=true`.
+- `MailSettings.EmailFrom`, `MailSettings.SmtpUser`, `MailSettings.SmtpPass`: credenciales de envío de correo. No las incluyas en el repositorio. Puedes usar servicios SMTP de desarrollo o herramientas locales para pruebas.
 
-   ```bash
-   git clone https://github.com/saidabel26/LinkUp.git
-   ```
+Cómo ejecutar (resumen)
+1. Clona el repositorio:
+   `git clone <repo-url>`
+2. Crea el archivo `appsettings.json` en la raíz del proyecto web (LinkUp) con la estructura mostrada arriba y añade tus valores.
+3. Restaura paquetes y compila:
+   `dotnet restore`
+   `dotnet build`
+4. Aplica migraciones y crea la base de datos (opcional, si usas EF Migrations):
+   - Desde la carpeta del proyecto web o del proyecto de `Infrastructure.Persistence`:
+     `dotnet ef database update --project LinkUp.Infrastructure.Persistence --startup-project LinkUp`
+5. Ejecuta la aplicación:
+   `dotnet run --project LinkUp`
 
-2. Configurar `appsettings.json` en el proyecto `LinkUp`:
-
-   - Importante: Antes de ejecutar la aplicaci�n debes a�adir tu propia configuraci�n.
-
-   Ejemplo de cadena de conexi�n:
-
-   ```json
-   "ConnectionStrings": {
-     "DefaultConnection": "Server=TU_SERVIDOR;Database=LinkUpDb;Integrated Security=true;TrustServerCertificate=true;MultipleActiveResultSets=true;"
-   }
-   ```
-
-   Ejemplo de secci�n de correo (MailSettings):
-
-   ```json
-   "MailSettings": {
-     "EmailFrom": "tu-correo@dominio.com",
-     "SmtpHost": "smtp.dominio.com",
-     "SmtpPort": 587,
-     "SmtpUser": "TU_SMTP_USER",
-     "SmtpPass": "TU_SMTP_PASS"
-   }
-   ```
-
-   - Nota: las claves `EmailFrom`, `SmtpUser` y `SmtpPass` deben contener tus propias credenciales SMTP.
-
-3. Aplicar migraciones a la base de datos
-
-   El proyecto contiene migraciones para la base de datos de dominio y para Identity. Para actualizarlas ejecuta (desde la ra�z del repo):
-
-   ```bash
-   dotnet ef database update --project LinkUp.Infrastructure.Persistence --startup-project LinkUp
-   dotnet ef database update --project LinkUp.Infrastructure.Identity --startup-project LinkUp
-   ```
-
-   - Si trabajas desde Visual Studio puedes usar el Package Manager Console o el UI de migraciones.
-
-4. Ejecutar la aplicaci�n
-
-   ```bash
-   dotnet run --project LinkUp
-   ```
-
-   Luego abre el navegador en `https://localhost:5001` (o el puerto que indique la salida).
-
-## Notas y recomendaciones
-
-- Para pruebas locales con correo puedes usar servicios como Mailtrap o configurar un SMTP de pruebas.
-- Si deseas reusar la base de datos de producci�n o un servidor SQL externo, actualiza `DefaultConnection` en `appsettings.json` y ejecuta las migraciones.
+Contribuciones y pruebas
+- Para desarrollo local puedes usar cuentas SMTP de prueba o herramientas como MailTrap / Papercut para capturar correos sin enviar a producción.
+- Las migraciones están incluidas en el proyecto de persistencia.
