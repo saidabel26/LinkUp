@@ -25,6 +25,8 @@ namespace LinkUp.Core.Application.ViewModels.Account
         [Required]
         [Compare("Password")]
         [DataType(DataType.Password)]
+        [MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
+        [RegularExpression(@"^(?=.*[a-z]).+$", ErrorMessage = "La contraseña debe tener al menos una letra minúscula")]
         public string ConfirmPassword { get; set; } = string.Empty;
         public string? Error { get; set; }
         public string? Success { get; set; }
